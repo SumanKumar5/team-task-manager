@@ -212,7 +212,7 @@ GET    /api/dashboard         Aggregated stats for current user
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/team-task-manager.git
+git clone https://github.com/SumanKumar5/team-task-manager.git
 cd team-task-manager
 
 # Install dependencies
