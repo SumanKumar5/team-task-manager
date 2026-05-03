@@ -1,159 +1,294 @@
-# Turborepo starter
+<div align="center">
 
-This Turborepo starter is maintained by the Turborepo core team.
+# TeamFlow
 
-## Using this example
+![TeamFlow Banner](https://img.shields.io/badge/TeamFlow-Task%20Manager-6d56fa?style=for-the-badge&logo=lightning&logoColor=white)
 
-Run the following command:
+**A modern, full-stack team task management platform with role-based access control**
 
-```sh
-npx create-turbo@latest
+[![Next.js](https://img.shields.io/badge/Next.js-15.3-black?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Hono](https://img.shields.io/badge/Hono-4.7-E36002?style=flat-square&logo=hono&logoColor=white)](https://hono.dev/)
+[![Prisma](https://img.shields.io/badge/Prisma-6.19-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-3.x-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Turborepo](https://img.shields.io/badge/Turborepo-2.9-EF4444?style=flat-square&logo=turborepo&logoColor=white)](https://turbo.build/)
+[![pnpm](https://img.shields.io/badge/pnpm-10.33-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
+
+</div>
+
+---
+
+## Overview
+
+TeamFlow is a production-grade team task management application that enables organizations to create projects, assign tasks, and track progress, all with fine-grained role-based access control at both the application and project level.
+
+Built as a Turborepo monorepo with a Next.js 15 frontend, a Hono REST API backend, and a PostgreSQL database on Neon, sharing Zod schemas across the entire stack for end-to-end type safety.
+
+---
+
+## Features
+
+### Authentication & Authorization
+
+- Secure signup and login with JWT-based session management
+- Role selection at registration - **Admin** or **Member**
+- Protected routes with automatic redirect on session expiry
+- Persistent auth state with Zustand + localStorage
+
+### Project Management
+
+- Create, view, and delete projects
+- Real-time progress bar showing task completion percentage
+- Project-level role assignment - each project has its own Admins and Members
+- Add and remove team members by email address
+
+### Task Management
+
+- Full Kanban board with four columns - **To Do**, **In Progress**, **In Review**, **Done**
+- Task detail side panel with inline editing for title, description, status, priority, assignee, and due date
+- Priority levels - Low, Medium, High, Urgent, with color-coded badges
+- Due date tracking with overdue detection and visual alerts
+- Search tasks by name and filter by priority or assignee
+- Keyboard shortcut `N` to quickly create a new task or project
+
+### Dashboard
+
+- Live stat cards - total projects, total tasks, overdue tasks, completed tasks
+- Tasks by Status with animated progress bars
+- Recent Tasks feed with priority badges and relative timestamps
+- Time-aware greeting based on the user's local time
+
+### Role-Based Access Control
+
+- **App-level roles** - Admin and Member selected at signup
+- **Project-level roles** - Project creators become project Admins; invited users default to Member
+- Admins can manage members, delete projects, and delete any task
+- Members can create and update tasks but cannot manage the project or remove members
+- All RBAC enforced on both the frontend UI and backend API
+
+---
+
+## Tech Stack
+
+### Monorepo
+
+| Tool           | Purpose                                 |
+| -------------- | --------------------------------------- |
+| **Turborepo**  | Monorepo build system with task caching |
+| **pnpm**       | Fast, disk-efficient package manager    |
+| **TypeScript** | End-to-end type safety                  |
+
+### Frontend (`apps/web`)
+
+| Tool                  | Purpose                                 |
+| --------------------- | --------------------------------------- |
+| **Next.js 15**        | React framework with App Router         |
+| **Tailwind CSS v3**   | Utility-first styling                   |
+| **Zustand**           | Lightweight client state management     |
+| **TanStack Query v5** | Server state, caching, and invalidation |
+| **React Hook Form**   | Performant form handling                |
+| **Zod**               | Schema validation (shared with backend) |
+| **Lucide React**      | Icon library                            |
+| **Sonner**            | Toast notifications                     |
+| **date-fns**          | Date formatting and manipulation        |
+| **Axios**             | HTTP client with interceptors           |
+
+### Backend (`apps/api`)
+
+| Tool              | Purpose                                      |
+| ----------------- | -------------------------------------------- |
+| **Hono**          | Modern, lightweight web framework            |
+| **Node.js 22**    | Runtime with native TypeScript support       |
+| **Prisma v6**     | Type-safe ORM                                |
+| **PostgreSQL 17** | Primary relational database (hosted on Neon) |
+| **bcryptjs**      | Password hashing                             |
+| **jsonwebtoken**  | JWT creation and verification                |
+| **Zod**           | Request validation                           |
+
+### Shared (`packages/shared`)
+
+| Tool    | Purpose                                          |
+| ------- | ------------------------------------------------ |
+| **Zod** | Single source of truth for all schemas and types |
+
+---
+
+## Project Structure
+
+```
+team-task-manager/
+├── apps/
+│   ├── web/
+│   │   ├── app/
+│   │   │   ├── (auth)/
+│   │   │   └── (dashboard)/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── lib/
+│   │   └── store/
+│   └── api/
+│       ├── src/
+│       │   ├── lib/
+│       │   ├── middleware/
+│       │   └── routes/
+│       └── prisma/
+│           └── schema.prisma
+└── packages/
+    └── shared/
+        └── src/
+            └── schemas/
 ```
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## Database Schema
 
-### Apps and Packages
+```
+User ──────────┬── Session (JWT sessions)
+               ├── Project (owner)
+               ├── ProjectMember (role per project)
+               ├── Task (created by)
+               └── Task (assigned to)
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+Project ───────┬── ProjectMember
+               └── Task
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
+Task ──────────┬── Project
+               ├── User (assignedTo)
+               └── User (createdBy)
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo build
-pnpm dlx turbo build
-pnpm exec turbo build
+## API Endpoints
+
+### Auth
+
+```
+POST   /api/auth/signup       Create account
+POST   /api/auth/login        Login
+POST   /api/auth/logout       Logout
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Projects
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
+```
+GET    /api/projects          List user's projects
+POST   /api/projects          Create project
+GET    /api/projects/:id      Get project with tasks & members
+PUT    /api/projects/:id      Update project (Admin only)
+DELETE /api/projects/:id      Delete project (Owner only)
+POST   /api/projects/:id/members        Add member (Admin only)
+DELETE /api/projects/:id/members/:uid   Remove member (Admin only)
 ```
 
-Without global `turbo`:
+### Tasks
 
-```sh
-npx turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+```
+GET    /api/projects/:id/tasks    List tasks for a project
+POST   /api/projects/:id/tasks    Create task
+PUT    /api/tasks/:id             Update task
+DELETE /api/tasks/:id             Delete task
 ```
 
-### Develop
+### Dashboard
 
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
+```
+GET    /api/dashboard         Aggregated stats for current user
 ```
 
-Without global `turbo`, use your package manager:
+---
 
-```sh
-cd my-turborepo
-npx turbo dev
-pnpm exec turbo dev
-pnpm exec turbo dev
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+- A [Neon](https://neon.tech) PostgreSQL database
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/team-task-manager.git
+cd team-task-manager
+
+# Install dependencies
+pnpm install
+
+# Approve Prisma build scripts
+pnpm approve-builds
 ```
 
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+### Environment Setup
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+Create `apps/api/.env`:
 
-```sh
-turbo dev --filter=web
+```env
+DATABASE_URL="your-neon-connection-string"
+JWT_SECRET="your-secret-key"
+FRONTEND_URL="http://localhost:3000"
+PORT=3001
 ```
 
-Without global `turbo`:
+Create `apps/web/.env.local`:
 
-```sh
-npx turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-### Remote Caching
+### Database Setup
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo login
+```bash
+cd apps/api
+pnpm exec prisma db push
+pnpm exec prisma generate
 ```
 
-Without global `turbo`, use your package manager:
+### Development
 
-```sh
-cd my-turborepo
-npx turbo login
-pnpm exec turbo login
-pnpm exec turbo login
+```bash
+# Run both frontend and backend
+pnpm dev
+
+# Or run individually
+pnpm --filter web dev     # Frontend on http://localhost:3000
+pnpm --filter api dev     # Backend on http://localhost:3001
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+---
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+## Deployment
 
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
+The application is deployed on **Railway** with the following services:
 
-```sh
-turbo link
+- **API** - Node.js service running the Hono backend
+- **Web** - Node.js service running the Next.js frontend
+- **Database** - PostgreSQL on [Neon](https://neon.tech) (serverless, Singapore region)
+
+### Environment Variables (Production)
+
+**API service:**
+
+```env
+DATABASE_URL=<neon-connection-string>
+JWT_SECRET=<strong-random-secret>
+FRONTEND_URL=<your-frontend-railway-url>
+PORT=3001
+NODE_ENV=production
 ```
 
-Without global `turbo`:
+**Web service:**
 
-```sh
-npx turbo link
-pnpm exec turbo link
-pnpm exec turbo link
+```env
+NEXT_PUBLIC_API_URL=<your-api-railway-url>
+NODE_ENV=production
 ```
 
-## Useful Links
+---
 
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+<div align="center">
+  Built with ❤️ using Next.js, Hono, Prisma, and PostgreSQL
+</div>
