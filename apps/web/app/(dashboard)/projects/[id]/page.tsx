@@ -599,7 +599,7 @@ export default function ProjectDetailPage() {
                     borderRadius: 10,
                   }}
                 >
-                  {tasksByStatus[col.key].length}
+                  {tasksByStatus[col.key]?.length ?? 0}
                 </span>
               </div>
 
@@ -611,7 +611,7 @@ export default function ProjectDetailPage() {
                   flex: 1,
                 }}
               >
-                {tasksByStatus[col.key].map((task: Task) => {
+                {(tasksByStatus[col.key] ?? []).map((task: Task) => {
                   const isOverdue =
                     task.dueDate &&
                     new Date(task.dueDate) < new Date() &&
@@ -741,7 +741,7 @@ export default function ProjectDetailPage() {
                   );
                 })}
 
-                {tasksByStatus[col.key].length === 0 && (
+                {(tasksByStatus[col.key]?.length ?? 0) === 0 && (
                   <div
                     style={{
                       display: "flex",

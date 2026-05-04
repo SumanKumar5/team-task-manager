@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { Zap, LayoutDashboard, FolderKanban, LogOut, User } from "lucide-react";
+import { Zap, LayoutDashboard, FolderKanban, LogOut } from "lucide-react";
 import { useAuthStore } from "@/store/auth";
 import { api } from "@/lib/api";
 import { toast } from "sonner";
