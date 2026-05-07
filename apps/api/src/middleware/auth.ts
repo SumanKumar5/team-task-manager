@@ -1,6 +1,6 @@
 import { createMiddleware } from "hono/factory";
-import { verifyToken } from "../lib/jwt.ts";
-import { prisma } from "../lib/prisma.ts";
+import { verifyToken } from "../lib/jwt.js";
+import { prisma } from "../lib/prisma.js";
 
 export type AuthVariables = {
   userId: string;

@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import bcrypt from "bcryptjs";
-import { prisma } from "../lib/prisma.ts";
-import { signToken } from "../lib/jwt.ts";
+import { prisma } from "../lib/prisma.js";
+import { signToken } from "../lib/jwt.js";
 import { signupSchema, loginSchema } from "@repo/shared";
 
 const auth = new Hono();

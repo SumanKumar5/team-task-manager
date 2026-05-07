@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
-import { prisma } from "../lib/prisma.ts";
-import { authMiddleware, type AuthVariables } from "../middleware/auth.ts";
+import { prisma } from "../lib/prisma.js";          
+import { authMiddleware, type AuthVariables } from "../middleware/auth.js";
 import {
   createProjectSchema,
   updateProjectSchema,

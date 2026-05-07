@@ -3,10 +3,10 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
-import auth from "./routes/auth.ts";
-import projects from "./routes/projects.ts";
-import tasks from "./routes/tasks.ts";
-import dashboard from "./routes/dashboard.ts";
+import auth from "./routes/auth.js";
+import projects from "./routes/projects.js";
+import tasks from "./routes/tasks.js";
+import dashboard from "./routes/dashboard.js";
 
 const app = new Hono();
 
